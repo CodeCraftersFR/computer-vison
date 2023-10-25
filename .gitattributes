@@ -1,3 +1,4 @@
 *.onnx filter=lfs diff=lfs merge=lfs -text
 lib/onnxruntime/lib/onnxruntime_providers_cuda.dll filter=lfs diff=lfs merge=lfs -text
 lib/onnxruntime/lib/onnxruntime_providers_tensorrt.dll filter=lfs diff=lfs merge=lfs -text
+lib/opencv/x64/** filter=lfs diff=lfs merge=lfs -text
