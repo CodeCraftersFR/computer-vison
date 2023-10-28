@@ -1,0 +1,3 @@
+assets/images/reid/query/0030_c1_f0056923.jpg
+assets/images/reid/query/0042_c5_f0068994.jpg
+assets/images/reid/query/0056_c8_f0017063.jpg

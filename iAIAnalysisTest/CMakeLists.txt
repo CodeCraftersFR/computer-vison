@@ -16,9 +16,9 @@ set(OpenCV_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/opencv/x64/vc16/lib")
 set(OpenCV_LIBS_DEBUG "${OpenCV_LIB_DIR}/opencv_world480d.lib")
 set(OpenCV_LIBS_RELEASE "${OpenCV_LIB_DIR}/opencv_world480.lib")
 
+# Set paths of iAICommonLib headers
+set(IAICOMMONLIB_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/iAICommonLib/include")
 
-# Set paths of ONNXRUNTIME headers
-set(ORT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/onnxruntime/include")
 
 # Set paths of iAIDetectorLib headers and libraries
 set(iAIDetectorLib_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/iAIDetectorLib/include")
@@ -26,17 +26,34 @@ set(iAIDetectorLib_LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
 set(iAIDetectorLib_LIBS_DEBUG "${iAIDetectorLib_LIB_DIR}/iAIDetectorLibd.lib")
 set(iAIDetectorLib_LIBS_RELEASE "${iAIDetectorLib_LIB_DIR}/iAIDetectorLib.lib")
 
+# Set paths of iAIReIDLib headers and libraries
+set(iAIReIDLib_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/iAIReIDLib/include")
+set(iAIReIDLib_LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
+set(iAIReIDLib_LIBS_DEBUG "${iAIReIDLib_LIB_DIR}/iAIReIDLibd.lib")
+set(iAIReIDLib_LIBS_RELEASE "${iAIReIDLib_LIB_DIR}/iAIReIDLib.lib")
+
+
 include_directories(
     include
     ${CMAKE_SOURCE_DIR}/include
     ${OpenCV_INCLUDE_DIR}
-    ${ORT_INCLUDE_DIR}
+    ${IAICOMMONLIB_INCLUDE_DIR}    
     ${iAIDetectorLib_INCLUDE_DIR}
+    ${iAIReIDLib_INCLUDE_DIR}
 )
 
+# Link debug libraries
 target_link_libraries(${PROJECT_NAME} 
-	debug ${OpenCV_LIBS_DEBUG} ${iAIDetectorLib_LIBS_DEBUG}
-	optimized ${OpenCV_LIBS_RELEASE} ${iAIDetectorLib_LIBS_RELEASE}
+	debug ${OpenCV_LIBS_DEBUG} 
+    debug ${iAIDetectorLib_LIBS_DEBUG}
+    debug ${iAIReIDLib_LIBS_DEBUG}
+)
+
+# Link release libraries
+target_link_libraries(${PROJECT_NAME} 
+	optimized ${OpenCV_LIBS_RELEASE} 
+	optimized ${iAIDetectorLib_LIBS_RELEASE}
+    optimized ${iAIReIDLib_LIBS_RELEASE}
 )
 
 
@@ -48,6 +65,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/debug
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/release
 )
+
+# Set the build dependencies
+add_dependencies(${PROJECT_NAME} iAIDetectorLib)
+add_dependencies(${PROJECT_NAME} iAIReIDLib)
 
 # Print the string to note the completion of the build
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

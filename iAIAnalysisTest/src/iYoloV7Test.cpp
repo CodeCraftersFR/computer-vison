@@ -1,21 +1,31 @@
-#include "CYoloV7.h"
+#include "CORTYoloV7.h"
 #include "iAIAnalysisTest.h"
 
-void TestYoloV7()
+void TestYoloV7(int argc, char** argv)
 {
 	
-	YoloNetConfig YOLOV7_nets = { 
+	ObjDetNetConfig stObjDetNetCfg = { 
 		0.3, 
 		0.5, 
-		"models/yolov7_640x640.onnx",
-		"models/class.names"
+		"models/yolo7/yolov7_640x640.onnx",
+		"models/yolo7/class.names"
 	};
 
-	CYoloV7 net(YOLOV7_nets);
+	NetDetailsConfig stYolo7NetDetailsCfg = {
+		-1,
+		0, 0, 0,
+		(double)1.0 / 255,
+		(double)1.0 / 255,
+		(double)1.0 / 255
+	};
+
+	CORTYoloV7 net(stObjDetNetCfg, stYolo7NetDetailsCfg);
+
 	std::string imgpath = "assets/images/bus.jpg";
 	cv::Mat srcimg = cv::imread(imgpath);
-	net.Detect(srcimg);
-
+	const ObjBoxArr& vBoxArr = net.Detect(srcimg);
+	
+	net.DrawBBox(srcimg, vBoxArr);
 	
 	cv::namedWindow("test", cv::WINDOW_NORMAL);
 	cv::imshow("test", srcimg);

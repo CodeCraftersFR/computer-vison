@@ -2,7 +2,7 @@
 - [Description](#description)
 - [Project Structure](#project-structure)
 - [Requirements](#requirements)
-- [Installation](#installation)
+- [Build](#build)
 - [Usage](#usage)
 
 ## Description
@@ -14,16 +14,30 @@ C++ Libraries for AI based CCTV footage analysis. The features are as follows:
 
 
 ## Project Structure
+### Directory Structure
 | Name | Description | Development Status |
 | --- | --- | --- |
-| iAIDetectorLib | Object Detection Dynamic Library | completed |
-| iAIReIDLib| ReID Dynamic Library | not started |
+| iAICommonLib | Common Library for the project | **`completed`** (for ORT) |
+| iAIDetectorLib | Object Detection Dynamic Library that was built using iAICommonLib and YoloV7 | **`completed`** |
+| iAIReIDLib| ReID Dynamic Library that was built using iAICommonLib and torchreid/fast-reid/youreid | `on progress` |
 | iAIAnalysisLib | AI Analysis Dynamic Library that uses the above two libraries | not started |
-| iAIAnalysisTest | Test Application for the above libraries | on progress |
-| include | Header files for iAIAnalysisLib | on progress |
-| lib | 3rd party libraries that are used in the project | on progress |
-| models | Pretrained models for the libraries | on progress |
-| assets | Sample images and videos for testing the libraries | on progress |
+| iAIAnalysisTest | Test Application for the above libraries | `on progress` |
+| include | Header files for iAIAnalysisLib | `on progress` |
+| lib | 3rd party libraries that are used in the project | `on progress` |
+| models | Pretrained models for the libraries | `on progress` |
+| assets | Sample images and videos for testing the libraries | `on progress` |
+
+### Project Dependencie Structure
+| Name | Dependencies |
+| --- | --- |
+| iAICommonLib | `OpenCV`, `ONNXRUNTIME` |
+| iAIDetectorLib | `iAICommonLib`, `YoloV7` |
+| iAIReIDLib | `iAICommonLib`, `torchreid`/`fast-reid`/`youreid` |
+| iAIAnalysisLib | `iAICommonLib`, `iAIDetectorLib`, `iAIReIDLib` |
+| iAIAnalysisTest | `iAICommonLib`, `iAIAnalysisLib` |
+
+
+
 
 ## Requirements
 - [CMake 3+](https://cmake.org/)
@@ -31,7 +45,7 @@ C++ Libraries for AI based CCTV footage analysis. The features are as follows:
 - [ONNXRUNTIME 1.16+](https://onnxruntime.ai/)
 - MSVC 2022 (Windows) or GCC (Linux)
 
-## Installation
+## Build
 ```bash
 cmake --build . --config Release
 ```

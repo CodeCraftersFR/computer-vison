@@ -1,4 +1,4 @@
-﻿project(iAIDetectorLib)
+﻿project(iAIReIDLib)
 
 #Set the C++ standard to 20
 set(CMAKE_CXX_STANDARD 20)
@@ -29,7 +29,7 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "include/*.h")
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 # Define preprocessor macros
-target_compile_definitions(${PROJECT_NAME} PRIVATE _IAIDETECTORLIB_)
+target_compile_definitions(${PROJECT_NAME} PRIVATE _IAIREIDLIB_)
 
 # Link debug libraries
 target_link_libraries(${PROJECT_NAME} 

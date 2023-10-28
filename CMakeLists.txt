@@ -12,11 +12,14 @@ endif()
 project ("iAIAnalysis")
 
 # Include sub-projects.
+add_subdirectory("iAICommonLib")
+
 add_subdirectory("iAIDetectorLib")
+
+add_subdirectory("iAIReIDLib")
+
 add_subdirectory("iAIAnalysisLib")
+
 add_subdirectory ("iAIAnalysisTest")
-
-
-
 
 
