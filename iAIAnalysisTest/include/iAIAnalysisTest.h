@@ -8,3 +8,4 @@
 void TestYoloV7(int argc, char** argv);
 void TestYouReID(int argc, char** argv);
 void TestYouReIDLegacy(int argc, char** argv);
+void TestTorchReID(int argc, char** argv);

@@ -26,7 +26,7 @@ CORTInferer::~CORTInferer()
 // @param[in] cvFrame: input image
 // @param[out] pResultData: output data
 // @return: true if success, otherwise false
-bool CORTInferer::Infer(const cv::Mat& cvFrame, void* pResultData)
+bool CORTInferer::Inference(const cv::Mat& cvFrame, void* pResultData)
 {
 	if (!m_bValid)
 		return false;
@@ -148,7 +148,12 @@ bool CORTInferer::ReadModel(const std::string& sModelPath, const std::string& sP
 		// Get network basic info such as input size, output size, etc
 		m_nNetInputH = (int)m_vNetInputNodeDims[0][2];
 		m_nNetInputW = (int)m_vNetInputNodeDims[0][3];
-		m_nNetOutputs = (int)m_vNetOuputNodeDims[0][2];
+
+		// [Note] If the onnx model was exported without considering the batch size, the output node dims will be 2D
+		// Otherwise, the output node dims will be 4D
+		if(m_vNetOuputNodeDims[0].size() > 2)
+			m_nNetOutputs = (int)m_vNetOuputNodeDims[0][2];
+
 		m_nNetProposals = (int)m_vNetOuputNodeDims[0][1];
 	}
 	catch (Ort::Exception& e)
@@ -229,7 +234,8 @@ bool CORTInferer::Validate()
 	if (m_nNetInputW == 0 || m_nNetInputH == 0)
 		return false;
 
-	if (m_nNetOutputs == 0)
+	// [Note] If the onnx model was exported without considering the batch size, the output node dims will be 2D
+	if (m_vNetOuputNodeDims[0].size() > 2 && m_nNetOutputs == 0)
 		return false;
 
 	if (m_nNetProposals == 0)

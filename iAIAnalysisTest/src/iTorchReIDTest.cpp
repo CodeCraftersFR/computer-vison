@@ -1,17 +1,17 @@
-#include "CORTYouReID.h"
+#include "CORTTorchReID.h"
 #include "iAIAnalysisTest.h"
 
 
 
-void TestYouReID(int argc, char** argv)
+void TestTorchReID(int argc, char** argv)
 {
 	ReIDNetConfig stReIDNetCfg = {
 		10,
-		0.0f, // output all the candidates
-		"models/youreid/youreid_l.onnx",
+		0.0f,	// output all the candidates
+		"models/torchreid/osnet_x1_0_same_domain_d.onnx",
 	};
 
-	NetDetailsConfig stYouReIDNetDetailsCfg = {
+	NetDetailsConfig stTorchReIDNetDetailsCfg = {
 		-1,
 		(double)0.406f * 255,
 		(double)0.456f * 255,
@@ -21,12 +21,12 @@ void TestYouReID(int argc, char** argv)
 		(double)1.0 / ((double)0.229f * 255),
 	};
 
-	CORTYouReID net(stReIDNetCfg, stYouReIDNetDetailsCfg);
+	CORTTorchReID net(stReIDNetCfg, stTorchReIDNetDetailsCfg);
 
 	std::string sQImgPath = "assets/images/reid/query/0030_c1_f0056923.jpg";
 	std::string sGalleryFolder = "assets/images/reid/gallery/";
 
-	
+
 	// Read the query image
 	cv::Mat cvQImg = cv::imread(sQImgPath);
 
@@ -44,7 +44,7 @@ void TestYouReID(int argc, char** argv)
 	//for(int i = 0; i< 100; i++)
 	{
 		// Perform ReID
-		const ReIDResArr& res = net.ReID(cvQImg, cvGImgs);
+  		const ReIDResArr& res = net.ReID(cvQImg, cvGImgs);
 	}
 
 	// Visualise the ReID results

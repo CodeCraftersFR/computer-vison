@@ -90,7 +90,7 @@ const ObjBoxArr& CORTYoloV7::Detect(cv::Mat& cvFrame)
 {
 	m_vObjBoxes.clear();
 
-	if (!CORTInferer::Infer(cvFrame, (void*)&m_vObjBoxes))
+	if (!CORTInferer::Inference(cvFrame, (void*)&m_vObjBoxes))
 	{
 		m_vObjBoxes.clear();
 		return m_vObjBoxes;

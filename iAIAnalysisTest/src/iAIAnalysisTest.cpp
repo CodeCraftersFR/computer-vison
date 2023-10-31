@@ -18,5 +18,9 @@ int main(int argc, char** argv)
 #if YOUREID_LEGACY_TEST_MODE
 	TestYouReIDLegacy(argc, argv);
 #endif
+
+#if TORCHREID_TEST_MODE
+	TestTorchReID(argc, argv);
+#endif
 	return 0;
 }

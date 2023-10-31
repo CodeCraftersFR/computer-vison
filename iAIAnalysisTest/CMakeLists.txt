@@ -1,4 +1,4 @@
-﻿project(iAIDetectorTest)
+﻿project(iAIAnalysisTest)
 
 # Glob all .cpp and .h files under src directory
 file(GLOB_RECURSE SOURCES "src/*.cpp" "include/*.h")

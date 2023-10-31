@@ -1,14 +1,14 @@
-#include "CORTYouReID.h"
+#include "CORTTorchReID.h"
 
-CORTYouReID::CORTYouReID(const ReIDNetConfig& stReIDNetConfig, const NetDetailsConfig& stNetDetailsConfig)
+CORTTorchReID::CORTTorchReID(const ReIDNetConfig& stReIDNetConfig, const NetDetailsConfig& stNetDetailsConfig)
 	: CReID(stReIDNetConfig)
 	, CORTInferer(stNetDetailsConfig)
 {
 	m_bValid = (ReadModel(stReIDNetConfig.sModelPath,
-		"", "youreid-onnx") && Validate());
+		"", "torchreid-onnx") && Validate());
 }
 
-CORTYouReID::~CORTYouReID()
+CORTTorchReID::~CORTTorchReID()
 {
 
 }
@@ -17,7 +17,7 @@ CORTYouReID::~CORTYouReID()
 // @param[in] cvQueryImg: single query image
 // @param[in] cvGalleryImgs: multiple gallery images
 // @return: ReID results
-const ReIDResArr& CORTYouReID::ReID(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs)
+const ReIDResArr& CORTTorchReID::ReID(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs)
 {
 	m_vReIDRes.clear();
 
@@ -30,7 +30,7 @@ const ReIDResArr& CORTYouReID::ReID(const cv::Mat& cvQueryImg, const std::vector
 
 	// Extract the embedding features of the gallery images
 	std::vector<std::vector<float>> vGalleryFeatures;
-	for(auto &cvGalleryImg : cvGalleryImgs)
+	for (auto& cvGalleryImg : cvGalleryImgs)
 	{
 		std::vector<float> vGalleryFeature;
 		if (!ExtractFeature(cvGalleryImg, vGalleryFeature))
@@ -51,10 +51,10 @@ const ReIDResArr& CORTYouReID::ReID(const cv::Mat& cvQueryImg, const std::vector
 // @param[in] vQueryFeature: query embedding feature
 // @param[in] cvGalleryImgs: multiple gallery images
 // @return: ReID results
-const ReIDResArr& CORTYouReID::ReID(const std::vector<float>& vQueryFeature, const std::vector<cv::Mat>& cvGalleryImgs)
+const ReIDResArr& CORTTorchReID::ReID(const std::vector<float>& vQueryFeature, const std::vector<cv::Mat>& cvGalleryImgs)
 {
 	m_vReIDRes.clear();
-	if(vQueryFeature.size() == 0)
+	if (vQueryFeature.size() == 0)
 		return m_vReIDRes;
 
 	// Extract the embedding features of the gallery images
@@ -80,7 +80,7 @@ const ReIDResArr& CORTYouReID::ReID(const std::vector<float>& vQueryFeature, con
 // @param[in] cvImg: input image
 // @param[out] vFeature: extracted feature vector
 // @return: true if the feature is successfully extracted, false otherwise
-const bool CORTYouReID::ExtractFeature(const cv::Mat& cvImg, std::vector<float>& vFeature)
+const bool CORTTorchReID::ExtractFeature(const cv::Mat& cvImg, std::vector<float>& vFeature)
 {
 	if (!CORTInferer::Inference(cvImg, &vFeature))
 	{
@@ -93,7 +93,7 @@ const bool CORTYouReID::ExtractFeature(const cv::Mat& cvImg, std::vector<float>&
 // Preprocess the input image
 // @param[in] cvImg: input image to be preprocessed
 // @param[out] cvProcImg: preprocessed image
-void CORTYouReID::PreProcess(const cv::Mat& cvImg, cv::Mat& cvProcImg)
+void CORTTorchReID::PreProcess(const cv::Mat& cvImg, cv::Mat& cvProcImg)
 {
 	CORTInferer::PreProcessCore(cvImg, true, cvProcImg);
 }
@@ -103,7 +103,7 @@ void CORTYouReID::PreProcess(const cv::Mat& cvImg, cv::Mat& cvProcImg)
 // @param[in] pTensorData: output tensor data to be postprocessed
 // @param[out] pPostProcessData: postprocessed data
 // [Note] - The normalised feature vector is stored in pPostProcessData
-void CORTYouReID::PostProcess(const cv::Size& cvOrgImgSize, const void* pTensorData, void* pPostProcessData)
+void CORTTorchReID::PostProcess(const cv::Size& cvOrgImgSize, const void* pTensorData, void* pPostProcessData)
 {
 	if (!pPostProcessData)
 		return;

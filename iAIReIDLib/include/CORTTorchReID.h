@@ -5,11 +5,11 @@
 #include "CORTInferer.h"
 
 // Class for YouReID deep network using ORT(ONNX Runtime) inference engine
-class IAIREIDLIB_API CORTYouReID : public CReID, public CORTInferer
+class IAIREIDLIB_API CORTTorchReID : public CReID, public CORTInferer
 {
 public:
-	CORTYouReID(const ReIDNetConfig& stReIDNetConfig, const NetDetailsConfig& stNetDetailsConfig);
-	~CORTYouReID();
+	CORTTorchReID(const ReIDNetConfig& stReIDNetConfig, const NetDetailsConfig& stNetDetailsConfig);
+	~CORTTorchReID();
 
 	// Perform ReID between the query image and the gallery images
 	// @param[in] cvQueryImg: single query image

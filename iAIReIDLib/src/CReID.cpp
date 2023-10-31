@@ -38,7 +38,7 @@ void CReID::Normalisation(const std::vector<float>& vOrgFeature, std::vector<flo
 // @param[in] eMode: similarity mode. COSINE: cosine similarity; EUCLIDEAN: Euclidean distance
 void CReID::CalculateTopK(const std::vector<float>& vQueryFeature, 
 	const std::vector<std::vector<float>>& vGalleryFeatures, 
-	const E_SimilarityMode& eMode /*= E_SimilarityMode::COSINE*/)
+	const E_SimilarityMetric& eMode /*= E_SimilarityMetric::COSINE*/)
 {
 	m_vReIDRes.clear();
 
@@ -48,11 +48,11 @@ void CReID::CalculateTopK(const std::vector<float>& vQueryFeature,
 	for (int i = 0; i < vGalleryFeatures.size(); i++)
 	{
 		float fSimilarity = 0.0f;
-		if (eMode == E_SimilarityMode::COSINE)
+		if (eMode == E_SimilarityMetric::COSINE)
 		{
 			fSimilarity = CosineSimilarity(vQueryFeature, vGalleryFeatures[i]);
 		}
-		else if (eMode == E_SimilarityMode::EUCLIDEAN)
+		else if (eMode == E_SimilarityMetric::EUCLIDEAN)
 		{
 			fSimilarity = 1 - EuclideanDistance(vQueryFeature, vGalleryFeatures[i]);
 		}
@@ -60,9 +60,13 @@ void CReID::CalculateTopK(const std::vector<float>& vQueryFeature,
 		{
 			assert(false);
 		}
+		
 		vSimilarities.push_back(fSimilarity);
 		vImgIDs.push_back(i);
 	}
+
+	if(vSimilarities.size() == 0)
+		return;
 
 	// Sort the similarities in descending order
 	std::sort(vImgIDs.begin(), vImgIDs.end(), [&](int x, int y) {return vSimilarities[x] > vSimilarities[y]; });
@@ -71,6 +75,9 @@ void CReID::CalculateTopK(const std::vector<float>& vQueryFeature,
 	int nLen = _MIN(m_stReIDNetConfig.nTopK, vImgIDs.size());
 	for (int i = 0; i < nLen; i++)
 	{
+		if(vSimilarities[vImgIDs[i]] < m_stReIDNetConfig.fSimThresh)
+			break;
+
 		ReIDRes stReIDRes(i, vImgIDs[i], vSimilarities[vImgIDs[i]]);
 		m_vReIDRes.push_back(stReIDRes);
 	}
@@ -99,9 +106,9 @@ cv::Mat CReID::Visualise(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& 
 	cvImgs.push_back(cvTmpImg);
 	for (int i = 0; i < (int)m_vReIDRes.size(); i++)
 	{
-		resize(cvGalleryImgs[i], cvTmpImg, outputSize);
+		resize(cvGalleryImgs[m_vReIDRes[i].nImgID], cvTmpImg, outputSize);
 		cv::copyMakeBorder(cvTmpImg, cvTmpImg, 3, 3, 3, 3, cv::BORDER_CONSTANT, cv::Scalar(255, 255, 255));
-		cv::putText(cvTmpImg, "G" + std::to_string(i), cv::Point(10, 30), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+		cv::putText(cvTmpImg, "G" + std::to_string(i) + ":" + std::to_string(m_vReIDRes[i].fSimilarity), cv::Point(10, 30), cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
 		cvImgs.push_back(cvTmpImg);
 	}
 	cv::hconcat(cvImgs, cvVisImg);

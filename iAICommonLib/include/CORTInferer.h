@@ -22,7 +22,7 @@ public:
 	// @param[in] cvFrame: input image
 	// @param[out] pResultData: output data
 	// @return: true if success, otherwise false
-	virtual bool Infer(const cv::Mat& cvFrame, void* pResultData);
+	virtual bool Inference(const cv::Mat& cvFrame, void* pResultData);
 
 	// Read the onnx model from the given path
 	// @param[in] sModelPath: path to the onnx model
