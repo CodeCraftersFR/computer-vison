@@ -63,3 +63,4 @@ out/
 
 # exclude opencv x64 directory
 !lib/opencv/x64
+!assets/videos/test.mp4
