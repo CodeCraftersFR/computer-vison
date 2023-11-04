@@ -66,7 +66,7 @@ cmake --build . --config Release
 
 ## Using `iAIAnalysisLib` library in your project
 ### - Project configuration
-- **Download the latest release from [windows-x64-lib]() and Extract it**
+- **Download the latest release from [windows-x64-lib.7z](https://github.com/CodeCraftersFR/computer-vison/releases) and Extract it**
 - **Copy the `include`, `lib` and `bin` folders to your project directory**
 - **Add the following lines to your `CMakeLists.txt` file. For details, please refer to [iAIAnalysisTest/CMakeLists.txt](iAIAnalysisTest/CMakeLists.txt)** 
 
