@@ -280,7 +280,9 @@ The `Detection Confidence Score` is shown on the top left corner of each boundin
 - The box with the lowest score (`0.0`) will have the pure <font color="green"> GREEN </font> colour.
 - The colour of the other boxes will be the mixture of the above two colours.
 
-https://github.com/CodeCraftersFR/computer-vison/assets/112942561/8c520e33-8d21-4110-8d3c-fb5acfc74ddc
+<video src="https://github.com/CodeCraftersFR/computer-vison/assets/112942561/8c520e33-8d21-4110-8d3c-fb5acfc74ddc" controls="controls" style="max-width: 730px;">
+</video>
+
 
 ## TODO
 - [ ] Inference using GPU. Currently, the libraries only support CPU inference.
