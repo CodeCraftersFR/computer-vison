@@ -257,7 +257,7 @@ The following image is used as the query image for ReID. The query image is regi
 
 ### Test Video
 
-https://github.com/CodeCraftersFR/computer-vison/assets/112942561/d99d8ad5-da00-4fb5-9d4e-2aa4de72a399
+https://github.com/CodeCraftersFR/computer-vison/assets/videos/test.mp4
 
 ### Result Video
 
