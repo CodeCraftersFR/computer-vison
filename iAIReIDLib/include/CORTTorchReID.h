@@ -4,24 +4,12 @@
 #include "CReID.h"
 #include "CORTInferer.h"
 
-// Class for YouReID deep network using ORT(ONNX Runtime) inference engine
+// Class for TorchReID deep network using ORT(ONNX Runtime) inference engine
 class IAIREIDLIB_API CORTTorchReID : public CReID, public CORTInferer
 {
 public:
 	CORTTorchReID(const ReIDNetConfig& stReIDNetConfig, const NetDetailsConfig& stNetDetailsConfig);
 	~CORTTorchReID();
-
-	// Perform ReID between the query image and the gallery images
-	// @param[in] cvQueryImg: single query image
-	// @param[in] cvGalleryImgs: multiple gallery images
-	// @return: ReID results
-	virtual const ReIDResArr& ReID(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs);
-
-	// Perform ReID between the query embedding feature and the gallery images
-	// @param[in] vQueryFeature: query embedding feature
-	// @param[in] cvGalleryImgs: multiple gallery images
-	// @return: ReID results
-	virtual const ReIDResArr& ReID(const std::vector<float>& vQueryFeature, const std::vector<cv::Mat>& cvGalleryImgs);
 
 	// Extract the feature vector from the input image
 	// @param[in] cvImg: input image

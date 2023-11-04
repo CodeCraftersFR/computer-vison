@@ -45,7 +45,7 @@ void CORTYoloV7::PostProcess(const cv::Size& cvOrgImgSize, const void* pTensorDa
 
 	ObjBoxArr* pvDetObj = (ObjBoxArr*)pPostProcessData;
 
-	for (int n = 0, nClassNum = m_vClsNames.size(); n < m_nNetProposals; n++)
+	for (int n = 0, nClassNum = m_vClsNames.size(); n < m_nNetProposals; n++, pData += m_nNetOutputs)
 	{
 		float fScore = pData[4];
 		if (fScore > m_stObjDetConfig.fConfThresh)
@@ -60,23 +60,29 @@ void CORTYoloV7::PostProcess(const cv::Size& cvOrgImgSize, const void* pTensorDa
 					nMaxClassID = k;
 				}
 			}
+
+			// Skip the class if it is not in the list of classes to be detected
+			if(!IsClsID2Detect(nMaxClassID))
+				continue;
+
+			
 			fMaxClassScore *= fScore;
 			if (fMaxClassScore > m_stObjDetConfig.fConfThresh)
 			{
-				float cx = pData[0] * fRW;  ///cx
-				float cy = pData[1] * fRH;   ///cy
-				float w = pData[2] * fRW;   ///w
-				float h = pData[3] * fRH;  ///h
+				float cx = pData[0] * fRW;
+				float cy = pData[1] * fRH;
+				float w = pData[2] * fRW; 
+				float h = pData[3] * fRH;
 
-				float xmin = cx - 0.5 * w;
-				float ymin = cy - 0.5 * h;
-				float xmax = cx + 0.5 * w;
-				float ymax = cy + 0.5 * h;
+				float xmin = cx - 0.5 * w; xmin = _MAX(0, xmin);
+				float ymin = cy - 0.5 * h; ymin = _MAX(0, ymin);
+				float xmax = cx + 0.5 * w; xmax = _MIN(cvOrgImgSize.width - 1, xmax); 
+				float ymax = cy + 0.5 * h; ymax = _MIN(cvOrgImgSize.height - 1, ymax);
 
 				pvDetObj->push_back(ObjBBox{ xmin, ymin, xmax, ymax, fMaxClassScore, nMaxClassID });
 			}
 		}
-		pData += m_nNetOutputs;
+		
 	}
 
 
@@ -84,19 +90,21 @@ void CORTYoloV7::PostProcess(const cv::Size& cvOrgImgSize, const void* pTensorDa
 }
 
 
-// Detects objects in the input frame
-// @param cvFrame: input frame
-const ObjBoxArr& CORTYoloV7::Detect(cv::Mat& cvFrame)
+// Detect objects in the input frame
+// @param[in] cvFrame: input frame in BGR format
+// @return: true if detection is successful, false otherwise. 
+// [Note]: The bounding boxes of detected objects can be obtained by calling GetObjBoxes().
+bool CORTYoloV7::Detect(const cv::Mat& cvFrame)
 {
 	m_vObjBoxes.clear();
 
 	if (!CORTInferer::Inference(cvFrame, (void*)&m_vObjBoxes))
 	{
 		m_vObjBoxes.clear();
-		return m_vObjBoxes;
+		return false;
 	}
 
-	return m_vObjBoxes;
+	return true;
 }
 
 bool CORTYoloV7::ReadModel(const std::string& sModelPath, const std::string& sPairedFilePath /*= ""*/, const std::string& sLogTitle /*= "onnxruntime"*/)

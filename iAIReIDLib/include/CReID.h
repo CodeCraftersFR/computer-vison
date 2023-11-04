@@ -19,20 +19,41 @@ public:
 	// Perform ReID between the query image and the gallery images
 	// @param[in] cvQueryImg: single query image
 	// @param[in] cvGalleryImgs: multiple gallery images
-	// @return: ReID results
-	virtual const ReIDResArr& ReID(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs) = 0;
+	// @return: true if the ReID is successfully performed, false otherwise
+	// [Note]: The ReID results can be obtained by calling GetReIDRes()
+	virtual bool ReID(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs);
 
 	// Perform ReID between the query embedding feature and the gallery images
 	// @param[in] vQueryFeature: query embedding feature
 	// @param[in] cvGalleryImgs: multiple gallery images
-	// @return: ReID results
-	virtual const ReIDResArr& ReID(const std::vector<float>& vQueryFeature, const std::vector<cv::Mat>& cvGalleryImgs) = 0;
+	// @return: true if the ReID is successfully performed, false otherwise
+	// [Note]: The ReID results can be obtained by calling GetReIDRes()
+	virtual bool ReID(const std::vector<float>& vQueryFeature, const std::vector<cv::Mat>& cvGalleryImgs);
+
+	// Perform ReID between the preregistered query embedding feature and the gallery images
+	// @param[in] cvGalleryImgs: multiple gallery images
+	// @return: true if the ReID is successfully performed, false otherwise
+	// [Note]: - The ReID results can be obtained by calling GetReIDRes()
+	//         - The query embedding feature should be registered in advance by calling RegisterQuery()
+	virtual bool ReID(const std::vector<cv::Mat>& cvGalleryImgs);
 
 	// Extract the feature vector from the input image
 	// @param[in] cvImg: input image
 	// @param[out] vFeature: extracted feature vector
 	// @return: true if the feature is successfully extracted, false otherwise
 	virtual const bool ExtractFeature(const cv::Mat& cvImg, std::vector<float>& vFeature) = 0;
+
+	// Register the query image for further ReID in advance
+	// @param[in] cvQueryImg: query image
+	// @return: true if the query image is successfully registered, false otherwise
+	// [Note]: The query feature vector is stored in m_vQueryFeature
+	virtual bool RegisterQuery(const cv::Mat& cvQueryImg);
+
+	// Register the query feature vector for further ReID in advance
+	// @param[in] vQueryFeature: query feature vector
+	// @return: true if the query feature vector is successfully registered, false otherwise
+	// [Note]: The query feature vector is stored in m_vQueryFeature
+	virtual bool RegisterQuery(const std::vector<float>& vQueryFeature);
 
 	// Visualise the ReID results
 	// @param[in] cvQueryImg: query image
@@ -43,6 +64,10 @@ public:
 	// @return: visualised image
 	// [note] - This is only for verifying the result in test mode. Do not use it in the production environment.
 	virtual cv::Mat Visualise(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs, int nResizeW, int nResizeH);
+
+	// Get the ReID results
+	// @return: ReID results
+	virtual const ReIDResArr& GetReIDRes() const;
 protected:
 
 	// Normalise the feature vector
@@ -66,15 +91,17 @@ private:
 	// @param[in] vFeature1: normalised feature vector 1
 	// @param[in] vFeature2: normalised feature vector 2
 	// @return: cosine similarity
-	float CosineSimilarity(const std::vector<float>& vFeature1, const std::vector<float>& vFeature2);
+	inline float CosineSimilarity(const std::vector<float>& vFeature1, const std::vector<float>& vFeature2);
 
 	// Calculate the Euclidean distance between two vectors
 	// @param[in] vFeature1: normalised feature vector 1
 	// @param[in] vFeature2: normalised feature vector 2
 	// @return: Euclidean distance
-	float EuclideanDistance(const std::vector<float>& vFeature1, const std::vector<float>& vFeature2);
+	inline float EuclideanDistance(const std::vector<float>& vFeature1, const std::vector<float>& vFeature2);
 
 protected:
 	ReIDNetConfig		m_stReIDNetConfig;		// ReID network configuration
 	ReIDResArr			m_vReIDRes;				// ReID results
+
+	std::vector<float>	m_vQueryFeature;		// query feature vector
 };

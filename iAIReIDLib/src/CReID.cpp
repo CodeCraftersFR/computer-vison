@@ -9,6 +9,82 @@ CReID::CReID(const ReIDNetConfig& stReIDNetConfig)
 CReID::~CReID()
 {
 	m_vReIDRes.clear();
+	m_vQueryFeature.clear();
+}
+
+// Perform ReID between the query image and the gallery images
+// @param[in] cvQueryImg: single query image
+// @param[in] cvGalleryImgs: multiple gallery images
+// @return: true if the ReID is successfully performed, false otherwise
+// [Note]: The ReID results can be obtained by calling GetReIDRes()
+bool CReID::ReID(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs)
+{
+	m_vReIDRes.clear();
+
+	// Extract the embedding feature of the query image
+	std::vector<float> vQueryFeature;
+	if (!ExtractFeature(cvQueryImg, vQueryFeature))
+	{
+		return false;
+	}
+
+	// Extract the embedding features of the gallery images
+	std::vector<std::vector<float>> vGalleryFeatures;
+	for (auto& cvGalleryImg : cvGalleryImgs)
+	{
+		std::vector<float> vGalleryFeature;
+		if (!ExtractFeature(cvGalleryImg, vGalleryFeature))
+		{
+			return false;
+		}
+		vGalleryFeatures.push_back(vGalleryFeature);
+	}
+
+	// Calculate Top K results
+	CalculateTopK(vQueryFeature, vGalleryFeatures, E_SimilarityMetric::COSINE);
+
+	// Return the ReID results
+	return true;
+}
+
+// Perform ReID between the query embedding feature and the gallery images
+// @param[in] vQueryFeature: query embedding feature
+// @param[in] cvGalleryImgs: multiple gallery images
+// @return: true if the ReID is successfully performed, false otherwise
+// [Note]: The ReID results can be obtained by calling GetReIDRes()
+bool CReID::ReID(const std::vector<float>& vQueryFeature, const std::vector<cv::Mat>& cvGalleryImgs)
+{
+	m_vReIDRes.clear();
+	if (vQueryFeature.size() == 0)
+		return false;
+
+	// Extract the embedding features of the gallery images
+	std::vector<std::vector<float>> vGalleryFeatures;
+	for (auto& cvGalleryImg : cvGalleryImgs)
+	{
+		std::vector<float> vGalleryFeature;
+		if (!ExtractFeature(cvGalleryImg, vGalleryFeature))
+		{
+			return false;
+		}
+		vGalleryFeatures.push_back(vGalleryFeature);
+	}
+
+	// Calculate Top K results
+	CalculateTopK(vQueryFeature, vGalleryFeatures, E_SimilarityMetric::COSINE);
+
+	// Return the ReID results
+	return true;
+}
+
+// Perform ReID between the preregistered query embedding feature and the gallery images
+// @param[in] cvGalleryImgs: multiple gallery images
+// @return: true if the ReID is successfully performed, false otherwise
+// [Note]: - The ReID results can be obtained by calling GetReIDRes()
+//         - The query embedding feature should be registered in advance by calling RegisterQuery()
+bool CReID::ReID(const std::vector<cv::Mat>& cvGalleryImgs)
+{
+	return ReID(m_vQueryFeature, cvGalleryImgs);
 }
 
 // Normalise the feature vector
@@ -83,6 +159,29 @@ void CReID::CalculateTopK(const std::vector<float>& vQueryFeature,
 	}
 }
 
+// Register the query image for further ReID in advance
+// @param[in] cvQueryImg: query image
+// @return: true if the query image is successfully registered, false otherwise
+// [Note]: The query feature vector is stored in m_vQueryFeature
+bool CReID::RegisterQuery(const cv::Mat& cvQueryImg)
+{
+	m_vQueryFeature.clear();
+	if(!ExtractFeature(cvQueryImg, m_vQueryFeature))
+		return false;
+
+	return true;
+}
+
+// Register the query feature vector for further ReID in advance
+// @param[in] vQueryFeature: query feature vector
+// @return: true if the query feature vector is successfully registered, false otherwise
+// [Note]: The query feature vector is stored in m_vQueryFeature
+bool CReID::RegisterQuery(const std::vector<float>& vQueryFeature)
+{
+	m_vQueryFeature = vQueryFeature;
+	return true;
+}
+
 // Visualise the ReID results
 // @param[in] cvQueryImg: query image
 // @param[in] cvGalleryImgs: gallery images
@@ -114,6 +213,11 @@ cv::Mat CReID::Visualise(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& 
 	cv::hconcat(cvImgs, cvVisImg);
 
 	return cvVisImg;
+}
+
+const ReIDResArr& CReID::GetReIDRes() const
+{
+	return m_vReIDRes;
 }
 
 // Calculate the cosine similarity between two vectors

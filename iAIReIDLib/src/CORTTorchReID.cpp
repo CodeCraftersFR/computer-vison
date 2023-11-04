@@ -13,68 +13,6 @@ CORTTorchReID::~CORTTorchReID()
 
 }
 
-// Perform ReID between the query image and the gallery images
-// @param[in] cvQueryImg: single query image
-// @param[in] cvGalleryImgs: multiple gallery images
-// @return: ReID results
-const ReIDResArr& CORTTorchReID::ReID(const cv::Mat& cvQueryImg, const std::vector<cv::Mat>& cvGalleryImgs)
-{
-	m_vReIDRes.clear();
-
-	// Extract the embedding feature of the query image
-	std::vector<float> vQueryFeature;
-	if (!ExtractFeature(cvQueryImg, vQueryFeature))
-	{
-		return m_vReIDRes;
-	}
-
-	// Extract the embedding features of the gallery images
-	std::vector<std::vector<float>> vGalleryFeatures;
-	for (auto& cvGalleryImg : cvGalleryImgs)
-	{
-		std::vector<float> vGalleryFeature;
-		if (!ExtractFeature(cvGalleryImg, vGalleryFeature))
-		{
-			return m_vReIDRes;
-		}
-		vGalleryFeatures.push_back(vGalleryFeature);
-	}
-
-	// Calculate Top K results
-	CalculateTopK(vQueryFeature, vGalleryFeatures, E_SimilarityMetric::COSINE);
-
-	// Return the ReID results
-	return m_vReIDRes;
-}
-
-// Perform ReID between the query embedding feature and the gallery images
-// @param[in] vQueryFeature: query embedding feature
-// @param[in] cvGalleryImgs: multiple gallery images
-// @return: ReID results
-const ReIDResArr& CORTTorchReID::ReID(const std::vector<float>& vQueryFeature, const std::vector<cv::Mat>& cvGalleryImgs)
-{
-	m_vReIDRes.clear();
-	if (vQueryFeature.size() == 0)
-		return m_vReIDRes;
-
-	// Extract the embedding features of the gallery images
-	std::vector<std::vector<float>> vGalleryFeatures;
-	for (auto& cvGalleryImg : cvGalleryImgs)
-	{
-		std::vector<float> vGalleryFeature;
-		if (!ExtractFeature(cvGalleryImg, vGalleryFeature))
-		{
-			return m_vReIDRes;
-		}
-		vGalleryFeatures.push_back(vGalleryFeature);
-	}
-
-	// Calculate Top K results
-	CalculateTopK(vQueryFeature, vGalleryFeatures, E_SimilarityMetric::COSINE);
-
-	// Return the ReID results
-	return m_vReIDRes;
-}
 
 // Extract the feature vector from the input image
 // @param[in] cvImg: input image

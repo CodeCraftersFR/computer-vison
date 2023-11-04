@@ -23,3 +23,5 @@ add_subdirectory("iAIAnalysisLib")
 add_subdirectory ("iAIAnalysisTest")
 
 
+
+add_subdirectory("iVideoWriterLib")

@@ -1,6 +1,8 @@
+#include <filesystem>
 #include "CORTInferer.h"
 #include "CORTPars.h"
 
+namespace fs = std::filesystem;
 
 CORTInferer::CORTInferer(const NetDetailsConfig& stConfig)
 	: m_NetDetailsConfig(stConfig)
@@ -54,13 +56,21 @@ bool CORTInferer::Inference(const cv::Mat& cvFrame, void* pResultData)
 			inputDims.data(),
 			inputDims.size());
 
+		size_t nInputCount = m_pORTPars->m_vInputNames.size();
+		size_t nOutputCount = m_pORTPars->m_vOutputNames.size();
 
-		std::vector<Ort::Value> outputTensors = m_pORTPars->session.Run(Ort::RunOptions{ nullptr },
+		std::vector<Ort::Value> outputTensors;
+		outputTensors.reserve(m_pORTPars->m_vOutputNames.size());
+		for (size_t i = 0; i < nOutputCount; i++)
+			outputTensors.emplace_back(nullptr);
+
+		m_pORTPars->session.Run(Ort::RunOptions{ nullptr },
 			&m_pORTPars->m_vInputNames[0],
 			&inputTensor,
-			m_vNetInputNodeDims.size(),
+			nInputCount,
 			m_pORTPars->m_vOutputNames.data(),
-			m_pORTPars->m_vOutputNames.size());
+			outputTensors.data(),
+			nOutputCount);
 
 
 		PostProcess(cvFrame.size(), &outputTensors, pResultData);
@@ -104,17 +114,37 @@ bool CORTInferer::ReadModel(const std::string& sModelPath, const std::string& sP
 			m_pORTPars = new CORTPars();
 
 
-		std::wstring widestr = std::wstring(sModelPath.begin(), sModelPath.end());
+		std::wstring sWideStr = std::wstring(sModelPath.begin(), sModelPath.end());
 
 		// Set log level and log id of onnxruntime
 		m_pORTPars->env = Ort::Env(OrtLoggingLevel::ORT_LOGGING_LEVEL_WARNING, sLogID.c_str());
 
 		// Initialise and set session options
 		m_pORTPars->sessionOptions = Ort::SessionOptions();
-		m_pORTPars->sessionOptions.SetGraphOptimizationLevel(ORT_ENABLE_BASIC);
+		m_pORTPars->sessionOptions.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
+		m_pORTPars->sessionOptions.EnableMemPattern();
+		m_pORTPars->sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+		
+		// Generate the onnx optimised file path based on the original onnx model path
+		std::wstring sOptimisedModelPath = sWideStr;
+		sOptimisedModelPath.replace(sOptimisedModelPath.find(L".onnx"), 5, L"_optimised.onnx");
+		// If the optimised file exists, delete it
+		if (fs::exists(sOptimisedModelPath))
+			fs::remove(sOptimisedModelPath);
 
+		// Set the optimised file path
+		m_pORTPars->sessionOptions.SetOptimizedModelFilePath(sOptimisedModelPath.c_str());
+
+		// Add cuda provider if GPU is used
+		if(m_NetDetailsConfig.nDeviceID >= 0)
+		{
+			OrtCUDAProviderOptions cudaProviderOptions;
+			cudaProviderOptions.device_id = m_NetDetailsConfig.nDeviceID;
+			m_pORTPars->sessionOptions.AppendExecutionProvider_CUDA(cudaProviderOptions);
+		}
+		
 		// Initialise session with model
-		m_pORTPars->session = Ort::Session(m_pORTPars->env, widestr.c_str(), m_pORTPars->sessionOptions);
+		m_pORTPars->session = Ort::Session(m_pORTPars->env, sWideStr.c_str(), m_pORTPars->sessionOptions);
 
 		Ort::AllocatorWithDefaultOptions allocator;
 		

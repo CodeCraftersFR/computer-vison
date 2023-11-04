@@ -16,7 +16,7 @@ public:
 
 	// Check whether the network is valid or not
 	// @return: true if valid, otherwise false
-	bool IsValid() const { return m_bValid; }
+	inline bool IsValid() const { return m_bValid; }
 
 	// Do inference on the input image using onnxruntime
 	// @param[in] cvFrame: input image
@@ -52,12 +52,12 @@ protected:
 	// @param[in] cvImg: input image to be preprocessed
 	// @param[in] bSwapRB: whether to swap the R and B channels
 	// @param[out] cvProcImg: preprocessed image
-	void PreProcessCore(const cv::Mat& cvImg, bool bSwapRB, cv::Mat& cvProcImg) const;
+	inline void PreProcessCore(const cv::Mat& cvImg, bool bSwapRB, cv::Mat& cvProcImg) const;
 	
 	// Core function for postprocessing the input image
 	// @param[in] pTensorData: output tensor data to be postprocessed
 	// @return: postprocessed data pointer by a default core function
-	const void* PostProcessCore(const void* pTensorData) const;
+	inline const void* PostProcessCore(const void* pTensorData) const;
 
 protected:
 	NetDetailsConfig m_NetDetailsConfig;	// network details configuration

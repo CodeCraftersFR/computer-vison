@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "core_define.h"
 //########################################################################
 // Common data structures
 //########################################################################
@@ -30,6 +31,7 @@ typedef struct _NetDetailsConfig {
 	}
 
 }NetDetailsConfig;
+
 
 
 //########################################################################

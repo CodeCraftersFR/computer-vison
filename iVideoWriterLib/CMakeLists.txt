@@ -1,14 +1,7 @@
-﻿project(iAIAnalysisTest)
+﻿project(iVideoWriterLib)
 
-# Glob all .cpp and .h files under src directory
-file(GLOB_RECURSE SOURCES "src/*.cpp" "include/*.h")
-
-# Add executable target
-add_executable(${PROJECT_NAME} ${SOURCES})
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-endif()
+#Set the C++ standard to 20
+set(CMAKE_CXX_STANDARD 20)
 
 # Set paths of OpenCV headers and libraries
 set(OpenCV_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/opencv/include")
@@ -17,42 +10,42 @@ set(OpenCV_LIBS_DEBUG "${OpenCV_LIB_DIR}/opencv_world480d.lib")
 set(OpenCV_LIBS_RELEASE "${OpenCV_LIB_DIR}/opencv_world480.lib")
 
 
-# Set paths of iAIAnalysisLib libraries
-set(iAIAnalysisLib_LIB_DIR "${CMAKE_SOURCE_DIR}/lib")
-set(iAIAnalysisLib_LIBS_DEBUG "${iAIAnalysisLib_LIB_DIR}/iAIAnalysisLibd.lib")
-set(iAIAnalysisLib_LIBS_RELEASE "${iAIAnalysisLib_LIB_DIR}/iAIAnalysisLib.lib")
-
-
 include_directories(
     include
     ${CMAKE_SOURCE_DIR}/include
     ${OpenCV_INCLUDE_DIR}
 )
 
+# Glob all .cpp and .h files under src directory
+file(GLOB_RECURSE SOURCES "src/*.cpp" "include/*.h")
+
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+
+# Define preprocessor macros
+target_compile_definitions(${PROJECT_NAME} PRIVATE _IVIDEOWRITERLIB_)
+
 # Link debug libraries
 target_link_libraries(${PROJECT_NAME} 
-	debug ${OpenCV_LIBS_DEBUG} 
-    debug ${iAIAnalysisLib_LIBS_DEBUG}
+    debug ${OpenCV_LIBS_DEBUG}
 )
 
 # Link release libraries
 target_link_libraries(${PROJECT_NAME} 
-	optimized ${OpenCV_LIBS_RELEASE} 
-    optimized ${iAIAnalysisLib_LIBS_RELEASE}
+	optimized ${OpenCV_LIBS_RELEASE}
 )
 
 
 # Add the suffix of d to the debug mode library
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX d)
 
-# Change the output directory of the executable file
-set_target_properties(${PROJECT_NAME} PROPERTIES 
+# Change the output directory of the library
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/lib
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/lib
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/debug
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/release
 )
 
-# Set the build dependencies
-add_dependencies(${PROJECT_NAME} iAIAnalysisLib)
 
 # Print the string to note the completion of the build
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
