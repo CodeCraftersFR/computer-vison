@@ -113,13 +113,13 @@ void TestPersonReID(int argc, char** argv)
 {
 	// Create AIAnalysis param
 	S_AnalysisParam stParam{
-		E_DeviceType::eDtCPU,				// Run on CPU
+		E_DeviceType::eDtCPU,			// Run on CPU
 		E_InferenceRuntimeType::eIrtOnnx,	// Use ONNX runtime for inference
-		E_DetectionMode::eDMYoloV7,			// Use YoloV7 module for detection
-		0.3f,								// Detection threshold
-		E_ReIDMode::eRmYouReID,				// Use YouReID module for ReID
-		0.5f,								// ReID threshold
-		5									// ReID top k to search
+		E_DetectionMode::eDMYoloV7,		// Use YoloV7 module for detection
+		0.3f,					// Detection threshold
+		E_ReIDMode::eRmYouReID,			// Use YouReID module for ReID
+		0.5f,					// ReID threshold
+		5					// ReID top k to search
 	};
 
 	// Create AIAnalysis instance with the param
@@ -189,13 +189,13 @@ void TestPersonDetection(int argc, char** argv)
 {
 	// Create AIAnalysis param
 	S_AnalysisParam stParam{
-		E_DeviceType::eDtCPU,				// Run on CPU
+		E_DeviceType::eDtCPU,			// Run on CPU
 		E_InferenceRuntimeType::eIrtOnnx,	// Use ONNX runtime for inference
-		E_DetectionMode::eDMYoloV7,			// Use YoloV7 module for detection
-		0.3f,								// Detection threshold
-		E_ReIDMode::eRmYouReID,				// Use YouReID module for ReID
-		0.5f,								// ReID threshold
-		5									// ReID top k to search
+		E_DetectionMode::eDMYoloV7,		// Use YoloV7 module for detection
+		0.3f,					// Detection threshold
+		E_ReIDMode::eRmYouReID,			// Use YouReID module for ReID
+		0.5f,					// ReID threshold
+		5					// ReID top k to search
 	};
 
 	// Create AIAnalysis instance with the param
@@ -257,9 +257,7 @@ The following image is used as the query image for ReID. The query image is regi
 
 ### Test Video
 
-<video width="100%" controls poster="assets/videos/test.png">
-  <source src="assets/videos/test.mp4" type="video/mp4">
-</video>
+https://github.com/CodeCraftersFR/computer-vison/assets/112942561/d99d8ad5-da00-4fb5-9d4e-2aa4de72a399
 
 ### Result Video
 
@@ -268,9 +266,7 @@ The `ReID Confidence Score` is shown on the top left corner of each bounding box
 - The box with the lowest score (`0.0`) will have the pure <font color="green"> GREEN </font> colour.
 - The colour of the other boxes will be the mixture of the above two colours.
 
-<video width="100%" controls poster="assets/videos/reid-output.png">
-  <source src="assets/videos/reid-output.mp4" type="video/mp4">
-</video>
+https://github.com/CodeCraftersFR/computer-vison/assets/112942561/5dc089dc-521a-4fab-b4e4-247200a813c2
 
 ## Person-Detection Test Result
 ### Test Video
@@ -284,9 +280,7 @@ The `Detection Confidence Score` is shown on the top left corner of each boundin
 - The box with the lowest score (`0.0`) will have the pure <font color="green"> GREEN </font> colour.
 - The colour of the other boxes will be the mixture of the above two colours.
 
-<video width="100%" controls poster="assets/videos/detection-output.png">
-  <source src="assets/videos/detection-output.mp4" type="video/mp4">
-</video>
+https://github.com/CodeCraftersFR/computer-vison/assets/112942561/8c520e33-8d21-4110-8d3c-fb5acfc74ddc
 
 ## TODO
 - [ ] Inference using GPU. Currently, the libraries only support CPU inference.
