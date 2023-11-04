@@ -111,7 +111,7 @@ void TestPersonDetection(int argc, char** argv)
 
 	// Begin video writer
 	// Person detection result will be written to the "detection-ouput.mp4" file
-	cAIAnalysis.BeginVideoWriter(E_AnalysisTaskType::eAttPersonDetection, "detection-ouput.mp4", nFPS, nWidth, nHeight);
+	cAIAnalysis.BeginVideoWriter(E_AnalysisTaskType::eAttPersonDetection, "detection-output.mp4", nFPS, nWidth, nHeight);
 
 	// Read video frame by frame
 	cv::Mat cvFrame;
