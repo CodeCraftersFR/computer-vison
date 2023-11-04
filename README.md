@@ -257,7 +257,7 @@ The following image is used as the query image for ReID. The query image is regi
 
 ### Test Video
 
-https://github.com/CodeCraftersFR/computer-vison/assets/videos/test.mp4
+![Test Video](assets/videos/test.gif)
 
 ### Result Video
 
@@ -266,7 +266,7 @@ The `ReID Confidence Score` is shown on the top left corner of each bounding box
 - The box with the lowest score (`0.0`) will have the pure <font color="green"> GREEN </font> colour.
 - The colour of the other boxes will be the mixture of the above two colours.
 
-https://github.com/CodeCraftersFR/computer-vison/assets/112942561/5dc089dc-521a-4fab-b4e4-247200a813c2
+![Result Video](assets/videos/reid-output.gif)
 
 ## Person-Detection Test Result
 ### Test Video
@@ -280,8 +280,7 @@ The `Detection Confidence Score` is shown on the top left corner of each boundin
 - The box with the lowest score (`0.0`) will have the pure <font color="green"> GREEN </font> colour.
 - The colour of the other boxes will be the mixture of the above two colours.
 
-<video src="https://github.com/CodeCraftersFR/computer-vison/assets/112942561/8c520e33-8d21-4110-8d3c-fb5acfc74ddc" controls="controls" style="max-width: 730px;">
-</video>
+![Result Video](assets/videos/detection-output.gif)
 
 
 ## TODO
