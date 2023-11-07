@@ -106,7 +106,6 @@ target_link_libraries(${PROJECT_NAME}
 ### - Test `Person-ReID` function. For details, please refer to [iAIAnalysisTest/iAIAnalysisTest.cpp](iAIAnalysisTest/iAIAnalysisTest.cpp)
 
 ```cpp
-```cpp
 #include "CAIAnalysis.h"
 
 void TestPersonReID(int argc, char** argv)
@@ -227,7 +226,7 @@ void TestPersonDetection(int argc, char** argv)
 		// ReID
 		if (!cAIAnalysis.RunTask(E_AnalysisTaskType::eAttPersonDetection, cvFrame))
 		{
-			cout << "ReID failed!" << endl;
+			cout << "Detection failed!" << endl;
 			break;
 		}
 
