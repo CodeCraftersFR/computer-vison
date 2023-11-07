@@ -103,7 +103,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 ```
 
-### - Test `Person-ReID` function. For details, please refer to [iAIAnalysisTest/iAIAnalysisTest.cpp](iAIAnalysisTest/iAIAnalysisTest.cpp)
+### - Test `Person-ReID` function. For details, please refer to [iAIAnalysisTest/iAIAnalysisTest.cpp](iAIAnalysisTest/src/iAIAnalysisTest.cpp)
 
 ```cpp
 #include "CAIAnalysis.h"
@@ -180,7 +180,7 @@ void TestPersonReID(int argc, char** argv)
 
 }
 ```
-### - Test `Person-Detection` function. For details, please refer to [iAIAnalysisTest/iAIAnalysisTest.cpp](iAIAnalysisTest/iAIAnalysisTest.cpp)
+### - Test `Person-Detection` function. For details, please refer to [iAIAnalysisTest/iAIAnalysisTest.cpp](iAIAnalysisTest/src/iAIAnalysisTest.cpp)
 ```cpp
 #include "CAIAnalysis.h"
 
